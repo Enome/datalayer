@@ -13,6 +13,7 @@ var clientDal = function () {
 
     emit: ee.emit.bind(ee),
     on: ee.on.bind(ee),
+    removeListener: ee.removeListener.bind(ee),
   
 
     // Add -->
