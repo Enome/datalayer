@@ -5,6 +5,10 @@ var clientDal = function () {
 
   var ee = new EventEmitter();
 
+  var copy = function (i) {
+    return JSON.parse(JSON.stringify(i));
+  };
+
   var dal = {
 
     _store: {},
@@ -32,7 +36,7 @@ var clientDal = function () {
       dal._store[type].push(doc);
       dal.emit('change', 'add', doc);
 
-      return doc;
+      return copy(doc);
 
     },
 
@@ -64,8 +68,8 @@ var clientDal = function () {
 
     // Find -->
 
-    find: function (type, id) {
-
+    _find: function (type, id) {
+      
       var store = dal._store[type];
 
       if (typeof dal._store[type] === 'undefined') {
@@ -83,6 +87,13 @@ var clientDal = function () {
       }
 
       return undefined;
+
+    },
+
+    find: function (type, id) {
+
+      var found = dal._find(type, id);
+      return typeof found === 'undefined' ? undefined : copy(found);
       
     },
 
@@ -106,10 +117,10 @@ var clientDal = function () {
       // By Type
 
       if (typeof arguments[0] === 'string') {
-        return dal._store[arguments[0]] || [];
+        result.push.apply(result, dal._store[arguments[0]] || []);
       }
 
-      return result;
+      return copy(result);
 
     },
 
@@ -118,7 +129,7 @@ var clientDal = function () {
     
     update: function (type, id, attributes) {
 
-      var doc = dal.find(type, id);
+      var doc = dal._find(type, id);
 
       for (var prop in attributes) {
         if (attributes.hasOwnProperty(prop)) {

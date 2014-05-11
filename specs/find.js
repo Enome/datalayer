@@ -31,13 +31,22 @@ describe('Query', function () {
       
     });
 
-    it('returns undefined if doc wasnt found', function () {
+    it('returns the found doc', function () {
 
       doc = dal.add('snowboard', { name: 'blue board'});
 
-      dal.find('snowboard', 1)
-        .should
+      should(dal.find('snowboard', 1))
         .eql(expected);
+      
+    });
+
+    it('returns a doc which doesnt reference to the doc in _store', function () {
+
+      doc = dal.add('snowboard', { name: 'blue board'});
+
+      (dal.find('snowboard', 1) !== dal._store.snowboard[0])
+        .should
+        .eql(true);
       
     });
 
@@ -107,6 +116,19 @@ describe('Query', function () {
         
       });
       
+    });
+
+    it('returns a copy of the docs and not a reference to them', function () {
+
+      dal.add('snowboard', { name: 'red board'});
+      dal.add('skateboard', { name: 'blue board'});
+
+      var result = dal.findAll();
+
+      (result[0] !== dal._store.snowboard[0])
+        .should
+        .eql(true);
+
     });
 
   });

@@ -28,16 +28,14 @@ describe('Update', function () {
   });
 
   it('returns the newly updated doc', function () {
-    dal
-      .update('snowboard', doc._id, { name: 'red board'})
-      .should
+    should(dal.update('snowboard', doc._id, { name: 'red board'}))
       .eql(expected_update);
   });
 
   it('emits the change event (update) returns the document', function (done) {
     dal.on('change', function (type, doc) {
       type.should.eql('update');
-      doc.should.eql(expected_update);
+      should(doc).eql(expected_update);
       done();
     });
     dal.update('snowboard', doc._id, { name: 'red board'});
